@@ -1,0 +1,8 @@
+# Types that several classes of lib/ share, which inline RBS cannot declare.
+module YardInlineRbs
+  # What TypeParser reads from a method signature: the parts ParseResult#add_signature takes.
+  type signature = { positional_types: Array[PositionalParamType],
+                     named_types: Hash[String, NamedParamAnnotation],
+                     return_type: String,
+                     block_annotation: BlockAnnotation? }
+end

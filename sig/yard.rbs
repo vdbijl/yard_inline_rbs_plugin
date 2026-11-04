@@ -1,0 +1,96 @@
+# Only the parts of YARD that this gem uses.
+module YARD
+  class Logger
+    def self.instance: () -> Logger
+    def warn: (String message) -> void
+  end
+
+  class Registry
+    def self.at: (String path) -> CodeObjects::Base?
+  end
+
+  class Docstring
+    def tags: () -> Array[Tags::Tag]
+    def add_tag: (*Tags::Tag tags) -> void
+    def delete_tag_if: () { (Tags::Tag) -> boolish } -> void
+  end
+
+  class DocstringParser
+    def self.after_parse: () { (DocstringParser) -> void } -> void
+    def object: () -> CodeObjects::Base?
+    def handler: () -> Handlers::Base?
+    def text: () -> String
+    def text=: (String text) -> String
+    def tags: () -> Array[Tags::Tag]
+    def tags=: (Array[Tags::Tag] tags) -> Array[Tags::Tag]
+  end
+
+  module Tags
+    class Tag
+      def initialize: (String | Symbol tag_name, String text, ?Array[String?]? types, ?String? name) -> void
+      def tag_name: () -> String
+      def text: () -> String
+      def name: () -> String?
+      def types: () -> Array[String]?
+    end
+
+    class OverloadTag < Tag
+      def initialize: (Symbol tag_name, String text) -> void
+    end
+
+    class Library
+      def self.define_tag: (String label, Symbol tag) -> void
+    end
+  end
+
+  module CodeObjects
+    class Base
+      def name: () -> Symbol
+      def docstring: () -> Docstring
+      def tags: () -> Array[Tags::Tag]
+      def has_tag?: (Symbol name) -> bool
+      def path: () -> String
+      def []: (Symbol key) -> untyped
+      def []=: (Symbol key, untyped value) -> untyped
+      def file: () -> String?
+      def line: () -> Integer?
+      def files: () -> Array[[String, Integer?]]
+      def source: () -> String?
+    end
+
+    class MethodObject < Base
+      def parameters: () -> Array[[String, String?]]
+    end
+  end
+
+  module Handlers
+    # A Ruby or an RBS AST node.
+    interface _Statement
+      def line: () -> Integer?
+      def comments_range: () -> Range[Integer]?
+    end
+
+    class Base
+      def parser: () -> Processor
+      def statement: () -> _Statement
+    end
+
+    class Processor
+      def file: () -> String
+    end
+
+    module RBS
+      class MethodHandler
+        def self.rbs_type_to_yard_types: (String rbs) -> Array[String]
+      end
+    end
+  end
+
+  module Parser
+    class SourceParser
+      def self.before_parse_list: () { (Array[String] files, untyped globals) -> void } -> void
+      def self.after_parse_list: () { (Array[String] files, untyped globals) -> void } -> void
+      def self.before_parse_file: () { (SourceParser parser) -> untyped } -> void
+    end
+  end
+end

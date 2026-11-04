@@ -1,0 +1,15 @@
+class Shop
+  # Not shown: the Ruby attribute has a description and a type.
+  attr_reader name: Symbol
+
+  # Not shown: the Ruby method has a description.
+  def remove: (String item, ?Integer count) -> void
+
+  def label: (Float) -> Float
+
+  # Empties the shop.
+  def clear: () -> void
+
+  # Not shown, and the warning names the Ruby method. The types are used.
+  def broken: (untyped item) -> void
+end

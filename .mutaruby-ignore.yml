@@ -1,0 +1,228 @@
+# Mutants that mutaruby cannot kill, because they do not change the behaviour.
+# See the mutation testing section of AGENTS.md.
+- file: lib/yard-inline-rbs.rb
+  operator: statement-delete
+  line: require 'yard'
+  mutation: require 'yard' => nil
+  lineno: 3
+  reason: YARD loads the plugin, so YARD is loaded already; the specs load it too.
+- file: lib/yard_inline_rbs/declaration_source.rb
+  operator: or-assign
+  line: "@first_line ||= original_line || @object.source.to_s.lines.first.to_s"
+  method: YardInlineRbs::DeclarationSource#first_line
+  mutation: "||= => ="
+  lineno: 52
+  reason: 'Memoisation: computing the value again gives the same result.'
+- file: lib/yard_inline_rbs/parameter_names.rb
+  operator: or-assign
+  line: "@raw ||= object.parameters.map(&:first)"
+  method: YardInlineRbs::ParameterNames#raw
+  mutation: "||= => ="
+  lineno: 61
+  reason: 'Memoisation: computing the value again gives the same result.'
+- file: lib/yard_inline_rbs/plugin.rb
+  operator: literal-string
+  line: YARD::Tags::Library.define_tag('RBS annotation', :rbs)
+  mutation: "'RBS annotation' => ''"
+  lineno: 3
+  reason: 'The label of the @rbs tag is never shown: the plugin removes the tags.'
+- file: lib/yard_inline_rbs/rbs_comment_parser.rb
+  operator: call-to-receiver
+  line: stars = match[1].to_s
+  method: YardInlineRbs::RbsCommentParser#process_splat_annotation
+  mutation: match[1].to_s => match[1]
+  lineno: 77
+  reason: 'Needed for Steep: MatchData#[] returns String?, and this group always matches.'
+- file: lib/yard_inline_rbs/rbs_comment_parser.rb
+  operator: call-to-receiver
+  line: name = match[2].to_s
+  method: YardInlineRbs::RbsCommentParser#process_splat_annotation
+  mutation: match[2].to_s => match[2]
+  lineno: 78
+  reason: 'Needed for Steep: MatchData#[] returns String?, and this group always matches.'
+- file: lib/yard_inline_rbs/rbs_file_tags.rb
+  operator: call-to-receiver
+  line: SEPARATORS = {
+  mutation: "{ instance: %w[#], singleton: %w[.], singleton_instance: %w[# .] }.freeze
+    => { instance: %w[#], singleton: %w[.], singleton_instance: %w[# .] }"
+  lineno: 11
+  reason: The constant is never mutated.
+- file: lib/yard_inline_rbs/rbs_file_tags.rb
+  operator: call-to-receiver
+  line: 'YardInlineRbs.warn("#{@path}: #{e.message}")'
+  method: YardInlineRbs::RbsFileTags#declarations
+  mutation: e.message => e
+  lineno: 47
+  reason: String interpolation of an exception gives its message.
+- file: lib/yard_inline_rbs/rbs_file_tags.rb
+  operator: call-to-receiver
+  line: tag_members(namespace, member.name.to_s, member.kind) {|tags| tags.method_types(method_types)}
+  method: YardInlineRbs::RbsFileTags#apply_method
+  mutation: member.name.to_s => member.name
+  lineno: 76
+  reason: Needed for Steep; the name is interpolated or compared as a string either
+    way.
+- file: lib/yard_inline_rbs/rbs_file_tags.rb
+  operator: call-to-receiver
+  line: name = member.name.to_s
+  method: YardInlineRbs::RbsFileTags#attribute_names
+  mutation: member.name.to_s => member.name
+  lineno: 88
+  reason: Needed for Steep; the name is interpolated or compared as a string either
+    way.
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_structured
+  mutation: private_class_method :format_structured => nil
+  lineno: 45
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_named
+  mutation: private_class_method :format_named => nil
+  lineno: 56
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_class_instance
+  mutation: private_class_method :format_class_instance => nil
+  lineno: 66
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_hash_instance
+  mutation: private_class_method :format_hash_instance => nil
+  lineno: 72
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: call-to-receiver
+  line: 'BASE_TYPE_STRINGS = { #: Hash[Class, String]'
+  mutation: "{ #: Hash[Class, String] RBS::Types::Bases::Nil => 'nil', RBS::Types::Bases::Void
+    => 'void', RBS::Types::Bases::Bool => 'Boolean', RBS::Types::Bases::Any => 'untyped',
+    RBS::Types::Bases::Top => 'top', RBS::Types::Bases::Bottom => 'bot', RBS::Types::Bases::Self
+    => 'self' }.freeze => { #: Hash[Class, String] RBS::Types::Bases::Nil => 'nil',
+    RBS::Types::Bases::Void => 'void', RBS::Types::Bases::Bool => 'Boolean', RBS::Types::Bases::Any
+    => 'untyped', RBS::Types::Bases::Top => 'top', RBS::Types::Bases::Bottom => 'bot',
+    RBS::Types::Bases::Self => 'self' }"
+  lineno: 6
+  reason: The constant is never mutated.
+- file: lib/yard_inline_rbs/tag_injector.rb
+  operator: call-to-receiver
+  line: "@parser.text = object.docstring.to_s"
+  method: YardInlineRbs::TagInjector#keep_previous_description
+  mutation: object.docstring.to_s => object.docstring
+  lineno: 50
+  reason: A Docstring is a String; to_s passes plain text to YARD, as it expects.
+- file: lib/yard_inline_rbs/tag_injector.rb
+  operator: literal-boolean
+  line: continued = false
+  method: YardInlineRbs::TagInjector#collect_inline_annotations
+  mutation: false => true
+  lineno: 63
+  reason: YARD removes the indentation of a comment, so the first line is never indented.
+- file: lib/yard_inline_rbs/result_applier.rb
+  operator: element-removal
+  line: "[tag_order.index(tag.name) || tag_order.size, index]"
+  method: YardInlineRbs::ResultApplier#sort_param_tags
+  mutation: tag_order.index(tag.name) || tag_order.size, index => tag_order.index(tag.name)
+    || tag_order.size
+  lineno: 46
+  reason: Ruby's sort_by keeps equal array keys in order in practice, but does not
+    promise it; the index does.
+- file: lib/yard_inline_rbs/declaration_source.rb
+  operator: statement-delete
+  line: clear_cache
+  reason: plugin.rb clears the cache before each parse list, and spec_helper before
+    each example.
+- file: lib/yard_inline_rbs/declaration_source.rb
+  operator: method-swap
+  line: "!comments_range.nil? && comments_range.first == statement.line"
+  method: YardInlineRbs::DeclarationSource#comment_on_declaration_line?
+  mutation: first => last
+  reason: A comment that reaches the declaration line is a trailing comment of one
+    line.
+- file: lib/yard_inline_rbs/parse_result.rb
+  operator: statement-delete
+  line: "@signature_added = false"
+  method: YardInlineRbs::ParseResult#initialize
+  reason: An unset instance variable is nil, which is as false as false; Steep wants
+    a bool.
+- file: lib/yard_inline_rbs/inline_types.rb
+  operator: statement-delete
+  line: private_class_method :typed
+  mutation: private_class_method :typed => nil
+  lineno: 37
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/tag_injector.rb
+  operator: statement-delete
+  line: return [] if result.empty?
+  method: YardInlineRbs::TagInjector#apply_result
+  mutation: return [] if result.empty? => nil
+  lineno: 65
+  reason: 'A shortcut: applying an empty result changes no tag and types nothing.'
+- file: lib/yard_inline_rbs/tag_injector.rb
+  operator: condition-false
+  line: return [] if result.empty?
+  method: YardInlineRbs::TagInjector#apply_result
+  mutation: result.empty? => false
+  lineno: 65
+  reason: 'A shortcut: applying an empty result changes no tag and types nothing.'
+- file: lib/yard_inline_rbs/rbs_file_tags.rb
+  operator: call-to-receiver
+  line: AnnotationWarnings.new(InlineTypes.location(object).to_s)
+  method: YardInlineRbs::RbsFileTags#tag_object
+  mutation: InlineTypes.location(object).to_s => InlineTypes.location(object)
+  lineno: 109
+  reason: "Needed for Steep: location returns String?; the warnings only report duplicates, which have a location."
+- file: lib/yard_inline_rbs/declaration_source.rb
+  operator: return-nil
+  line: return false if handler.nil?
+  method: YardInlineRbs::DeclarationSource#comment_on_declaration_line?
+  mutation: return false => return nil
+  lineno: 90
+  occurrence: 2
+  reason: The only caller negates the result, and !nil is !false.
+- file: lib/yard_inline_rbs/declaration_source.rb
+  operator: logical-drop-left
+  line: file_line(file, line) if file && line
+  method: YardInlineRbs::DeclarationSource#original_line
+  mutation: file && line => line
+  lineno: 102
+  reason: YARD records a line only together with a file.
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_collection
+  mutation: private_class_method :format_collection => nil
+  lineno: 52
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_tuple
+  mutation: private_class_method :format_tuple => nil
+  lineno: 61
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_record
+  mutation: private_class_method :format_record => nil
+  lineno: 74
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_type_formatter.rb
+  operator: statement-delete
+  line: private_class_method :format_list
+  mutation: private_class_method :format_list => nil
+  lineno: 66
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/rbs_description.rb
+  operator: statement-delete
+  line: private_class_method :groups
+  mutation: private_class_method :groups => nil
+  lineno: 36
+  reason: 'Visibility only: no spec calls the private class method.'
+- file: lib/yard_inline_rbs/parse_result.rb
+  operator: method-swap
+  line: return add_signature(signatures.first) if signatures.size < 2
+  method: YardInlineRbs::ParseResult#add_signatures
+  mutation: first => last
+  lineno: 90
+  reason: This branch has at most one signature, so the first is the last.

@@ -1,0 +1,26 @@
+# Generated
+/tmp/
+/coverage/
+/doc/
+/.yardoc/
+/.bundle/
+*.gem
+
+# Personal tooling and editor files
+/.claude/
+/.remember/
+/.idea
+/.vscode
+/.ruby-lsp/
+/.mcp.json
+/.bash_profile
+/.bashrc
+/.profile
+/.zprofile
+/.zshrc
+/.gitconfig
+/.gitmodules
+/.ripgreprc
+/CLAUDE.md
+/.ruby-gemset
+/.ruby-version

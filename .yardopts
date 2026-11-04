@@ -1,0 +1,7 @@
+--markup markdown
+--markup-provider redcarpet
+--plugin inline-rbs
+--plugin rspec-coverage
+--exclude spec/fixtures/
+lib/**/*.rb
+spec/**/*.rb

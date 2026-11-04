@@ -1,0 +1,56 @@
+# RuboCop defaults plus plugins; the target Ruby version comes from the gemspec.
+plugins:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+# Add to RuboCop's default excludes (vendor/**/* and more) instead of replacing them.
+inherit_mode:
+  merge:
+    - Exclude
+
+AllCops:
+  NewCops: enable
+  # Example projects that spec/fixture_projects_spec.rb runs YARD in.
+  Exclude:
+    - spec/fixtures/**/*
+
+Layout/LineContinuationSpacing:
+  EnforcedStyle: no_space
+
+Layout/LineLength:
+  Max: 100
+  AllowRBSInlineAnnotation: true
+
+# Inline RBS annotations: `#: Type` comments.
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true
+
+# The type of an attribute is declared per attribute, in a trailing comment.
+Style/AccessorGrouping:
+  EnforcedStyle: separated
+
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyle: no_space
+  SpaceBeforeBlockParameters: false
+
+# Counts every call as a branch; method length and complexity already limit method size.
+Metrics/AbcSize:
+  Enabled: false
+
+# Expectations are set before the action, see AGENTS.md.
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
+# YARD loads plugins by their `yard-` prefixed file name.
+Naming/FileName:
+  Exclude:
+    - lib/yard-inline-rbs.rb
+
+# A heredoc is the example's input.
+RSpec/ExampleLength:
+  CountAsOne: ['heredoc']
+
+# We never use `unless`.
+Style/NegatedIf:
+  Enabled: false
